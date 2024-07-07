@@ -14,6 +14,7 @@ RAM_OPTS=$(echo "-m ${RAM_SIZE^^}" | sed 's/MB/M/g;s/GB/G/g;s/TB/T/g')
 MON_OPTS="-monitor $MONITOR -name $PROCESS,process=$PROCESS,debug-threads=on"
 MAC_OPTS="-machine type=${MACHINE},smm=${SECURE},graphics=off,vmport=off,dump-guest-core=off,hpet=off${KVM_OPTS}"
 AUDIO_OPTS="-device ich9-intel-hda,bus=pcie.0,addr=0x1b -device hda-micro,audiodev=hda -audiodev pa,id=hda,server=/run/pulse/native"
+SPICE_OPTS="-device virtio-serial-pci -device virtserialport,chardev=vdagent,name=com.redhat.spice.0 -chardev qemu-vdagent,id=vdagent,name=vdagent,clipboard=on"
 
 if [[ "${MACHINE,,}" == "pc-i440fx-2"* ]]; then
   DEV_OPTS=""
@@ -23,7 +24,7 @@ else
   [[ "${BOOT_MODE,,}" != "windows"* ]] && DEV_OPTS+=" -device virtio-balloon-pci,id=balloon0,bus=pcie.0,addr=0x4"
 fi
 
-ARGS="$DEF_OPTS $CPU_OPTS $RAM_OPTS $MAC_OPTS $DISPLAY_OPTS $MON_OPTS $SERIAL_OPTS $USB_OPTS $NET_OPTS $DISK_OPTS $BOOT_OPTS $DEV_OPTS $AUDIO_OPTS $ARGUMENTS"
+ARGS="$DEF_OPTS $CPU_OPTS $RAM_OPTS $MAC_OPTS $DISPLAY_OPTS $MON_OPTS $SERIAL_OPTS $USB_OPTS $NET_OPTS $DISK_OPTS $BOOT_OPTS $DEV_OPTS $AUDIO_OPTS $SPICE_OPTS $ARGUMENTS"
 ARGS=$(echo "$ARGS" | sed 's/\t/ /g' | tr -s ' ')
 
 if [[ "${DISPLAY,,}" == "web" ]]; then
