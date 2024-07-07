@@ -131,7 +131,7 @@ getHostPorts() {
   local web="8006"
 
   [ -z "$list" ] && list="$web" || list+=",$web"
-
+  [ -z "$list" ] && list="4901:4905" || list+=",4901:4905,6901"
   if [[ "${DISPLAY,,}" == "vnc" ]] || [[ "${DISPLAY,,}" == "web" ]]; then
     [ -z "$list" ] && list="$vnc" || list+=",$vnc"
   fi
@@ -229,7 +229,7 @@ configureNAT() {
     error "Failed to configure IP tables!" && return 1
   fi
 
-  if ! iptables -t nat -A PREROUTING -i "$VM_NET_DEV" -d "$IP" -p udp  -j DNAT --to "$VM_NET_IP"; then
+  if ! iptables -t nat -A PREROUTING -i "$VM_NET_DEV" -d "$IP" -p udp${exclude} -j DNAT --to "$VM_NET_IP"; then
     error "Failed to configure IP tables!" && return 1
   fi
 
