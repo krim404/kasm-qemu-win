@@ -1,0 +1,23 @@
+# PyCharm
+.idea/
+
+# VS Code
+.vscode/
+
+# Docker Dev Deployment
+docker-compose.dev.yml
+
+# Python virtualenv environment folders
+env/
+env3/
+.env/
+
+# Bot local files
+*.db
+*.log
+
+# Config file
+config.yaml
+
+# Python
+__pycache__/

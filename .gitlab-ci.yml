@@ -1,0 +1,24 @@
+stages:
+  - build
+  - scan
+
+build-and-push:
+  image: docker:26.1.4
+  stage: build
+  services:
+    - docker:26.1.4-dind
+  before_script:
+    - echo "$HARBOR_PASSWORD" | docker login --username "$HARBOR_USERNAME" --password-stdin "$HARBOR_HOST"
+  script:
+    - docker build -t $CI_REGISTRY_IMAGE:latest --push .
+
+trivy_scan:
+  stage: scan
+  image: 
+    name: aquasec/trivy:latest
+    entrypoint: [""]
+  script:
+    - trivy image --exit-code 1 --ignore-unfixed --severity HIGH,CRITICAL $CI_REGISTRY_IMAGE:latest
+  allow_failure: true
+  rules:
+    - if: $CI_COMMIT_BRANCH
